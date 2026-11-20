@@ -26,3 +26,38 @@ class FilterTLM:
             "t_total": t_total,
             "transfer_share_pct": (t_transfer / t_total) * 100.0
         }
+
+
+if __name__ == "__main__":
+    xb = [42] * 1024
+
+    baud = 115200
+    clk = 100_000_000
+    frame_size = 10
+    uart_wpc = frame_size / baud * clk
+
+    print(f"UART WPC: {uart_wpc} clock cycles (cc) per word")
+
+    tlm_rc_uart = FilterTLM(rc_exact, words_per_cycle=uart_wpc, cycles_per_sample=1)
+    res_rc_uart = tlm_rc_uart.run_transaction(xb)
+    print(f"Transfer: {res_rc_uart.get("t_transfer")} cc; Compute: {res_rc_uart.get("t_compute")} cc; Total: {res_rc_uart.get("t_total")} cc")
+
+    tlm_sma_uart = FilterTLM(sma_exact, words_per_cycle=uart_wpc, cycles_per_sample=1)
+    res_sma_uart = tlm_sma_uart.run_transaction(xb)
+    print(f"Transfer: {res_sma_uart.get("t_transfer")} cc; Compute: {res_sma_uart.get("t_compute")} cc; Total: {res_sma_uart.get("t_total")} cc")
+
+    tlm_rc_axi = FilterTLM(rc_exact, words_per_cycle=1.0, cycles_per_sample=1)
+    res_rc_axi = tlm_rc_axi.run_transaction(xb)
+    print(f"Transfer: {res_rc_axi.get("t_transfer")} cc; Compute: {res_rc_axi.get("t_compute")} cc; Total: {res_rc_axi.get("t_total")} cc")
+
+    tlm_sma_axi = FilterTLM(sma_exact, words_per_cycle=1.0, cycles_per_sample=1)
+    res_sma_axi = tlm_sma_axi.run_transaction(xb)
+    print(f"Transfer: {res_sma_axi.get("t_transfer")} cc; Compute: {res_sma_axi.get("t_compute")} cc; Total: {res_sma_axi.get("t_total")} cc")
+
+    tlm_rc_pipe = FilterTLM(rc_exact, words_per_cycle=1.0, cycles_per_sample=1, overlap=True)
+    res_rc_pipe = tlm_rc_pipe.run_transaction(xb)
+    print(f"Transfer: {res_rc_pipe.get("t_transfer")} cc; Compute: {res_rc_pipe.get("t_compute")} cc; Total: {res_rc_pipe.get("t_total")} cc")
+
+    tlm_sma_pipe = FilterTLM(sma_exact, words_per_cycle=1.0, cycles_per_sample=1, overlap=True)
+    res_sma_pipe = tlm_sma_pipe.run_transaction(xb)
+    print(f"Transfer: {res_sma_pipe.get("t_transfer")} cc; Compute: {res_sma_pipe.get("t_compute")} cc; Total: {res_sma_pipe.get("t_total")} cc")

@@ -23,3 +23,22 @@ def sma_exact(x, N=16):
         total = sum(buffer)
         y.append(total >> shift)
     return y
+
+def rc_float(x, s=4):
+    k = 1.0 / (2**s)
+    y = []
+    current_y = 0.0
+    for sample in x:
+        current_y = current_y + k * (sample - current_y)
+        y.append(current_y)
+    return y
+
+def rc_exact(x, s=4, frac_bits=8):
+    y_acc = 0
+    y = []
+    for sample in x:
+        x_scaled = sample << frac_bits
+        diff = x_scaled - y_acc
+        y_acc = y_acc + (diff >> s)
+        y.append(y_acc >> frac_bits)
+    return y

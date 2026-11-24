@@ -5,3 +5,19 @@ __pycache__/
 .pytest_cache/
 *.venv/
 venv/
+
+# Cocotb & Simulators (Icarus / Verilator)
+sim_build/
+**/sim_build/
+*.vvp
+*.vcd
+*.fst
+*.fst.hier
+*.xml
+
+# Hardware build outputs / bitstreams
+hw/build/
+*.bit
+*.bin
+*.dcp
+

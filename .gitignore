@@ -15,9 +15,19 @@ sim_build/
 *.fst.hier
 *.xml
 
+# Vivado / EDA
+*.jou
+*.log
+*.str
+*.pb
+*.wdb
+.Xil/
+vivado_*.backup.*
+usage_statistics_webtalk.*
+clockInfo.txt
+
 # Hardware build outputs / bitstreams
 hw/build/
 *.bit
 *.bin
 *.dcp
-

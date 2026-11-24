@@ -3,7 +3,8 @@
 
 **Authors:** Łukasz Kmiecik, Paweł Ścibek, Wiktor Rogowski 
 **Repository:** https://github.com/Sneaky-76/Moving-average-and-digital-RC-filter.git
-**Target Device:** Xilinx Artix-7 'xc7a100tcsg324-1' (Digilent Nexys 4 DDR)
+**Evaluation Tag:** `git tag final`  
+**Target Device:** Xilinx Artix-7 `xc7a100tcsg324-1` (Digilent Nexys 4 DDR)
 
 ---
 
@@ -14,7 +15,7 @@
   * Simple Moving Average (SMA) filter with window $N = 16$.
   * First-order digital recursive RC/IIR filter: $y[n] = y[n-1] + k(x[n] - y[n-1])$ with $k = 2^{-s}$ ($s = 4$).
 * **Interfaces & Formats:**
-  * Input data: 8-bit signed integer ('int8' $\in [-128, 127]$).
+  * Input data: 8-bit signed integer (`int8` $\in [-128, 127]$).
   * Output data: 8-bit signed integer.
   * Internal accumulator / registers: sized to guarantee zero mathematical overflow under all possible inputs.
 * **Performance Requirements:**
@@ -35,7 +36,7 @@
   * Bit-exact model vs. float reference: tolerance $\epsilon = \Delta_{out}/2 = 0.5$ LSB for truncation/rounding analysis.
   * RTL vs. Bit-exact model: strictly **bit-by-bit identical** ($\text{assert } y_{hw} === y_{ref}$).
 * **Test Vectors:**
-  * Deterministic seed: 'SEED = 2026'.
+  * Deterministic seed: `SEED = 2026`.
   * Pseudorandom vector: $10^4$ samples drawn uniformly from $[-128, 127]$.
   * 12 Edge-case vectors:
     1. Zero input stream ($x=0$)
@@ -56,7 +57,7 @@
 ### 3. Architecture
 *Question: What was built?*
 
-* **Host-to-Accelerator Interface:** Streaming interface ('sample_in', 'valid_in', 'ready_out', 'sample_out', 'valid_out').
+* **Host-to-Accelerator Interface:** Streaming interface (`sample_in`, `valid_in`, `ready_out`, `sample_out`, `valid_out`).
 * **Accumulator Dynamic Range Proof:**
   * For SMA with $N=16$ and 8-bit signed input $[-128, 127]$:
     $$\text{Worst-case sum} = 16 \times (-128) = -2048$$
@@ -92,18 +93,18 @@
 *Question: How do we know each variant actually works?*
 
 * **Proof Sentence for Variant 0:**
-  > *'tb_sma_direct' passes in RTL simulation, bit-by-bit identical to the bit-exact Python model, for $10^4$ random vectors ('SEED = 2026') and 12 targeted edge-case scenarios.*
+  > *`tb_sma_direct` passes in RTL simulation, bit-by-bit identical to the bit-exact Python model, for $10^4$ random vectors (`SEED = 2026`) and 12 targeted edge-case scenarios.*
 * **Proof Sentence for Variant 1:**
-  > *'tb_sma_recursive' passes in RTL simulation, bit-by-bit identical to the bit-exact Python model, for $10^4$ random vectors ('SEED = 2026') and 12 targeted edge-case scenarios.*
+  > *`tb_sma_recursive` passes in RTL simulation, bit-by-bit identical to the bit-exact Python model, for $10^4$ random vectors (`SEED = 2026`) and 12 targeted edge-case scenarios.*
 * **Proof Sentence for Variant 2:**
-  > *'tb_rc_filter' passes in RTL simulation, bit-by-bit identical to the bit-exact Python model, for $10^4$ random vectors ('SEED = 2026') and 12 targeted edge-case scenarios, confirming full settling on step responses with zero truncation stall.*
+  > *`tb_rc_filter` passes in RTL simulation, bit-by-bit identical to the bit-exact Python model, for $10^4$ random vectors (`SEED = 2026`) and 12 targeted edge-case scenarios, confirming full settling on step responses with zero truncation stall.*
 
 ---
 
 ### 6. Results against Baseline
 *Question: How much better is it, and against what?*
 
-#### Synthesis Benchmarking Table (Artix-7 'xc7a100tcsg324-1')
+#### Synthesis Benchmarking Table (Artix-7 `xc7a100tcsg324-1`)
 
 | Variant | Architecture Change | Test Status | Cycles / Sample | LUT | FF | DSP | BRAM | $f_{max}$ [MHz] | Throughput [MS/s] | Error vs Float (MSE) |
 | :--- | :--- | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: |
@@ -115,19 +116,19 @@
 
 | Module | Window $N$ | LUT | FF | WNS [ns] | $f_{max}$ [MHz] | Throughput [MS/s] |
 | :--- | :---: | :---: | :---: | :---: | :---: | :---: |
-| 'sma_direct' | 8 | 49 | 65 | +4.055 | 168.2 | 168.2 |
-| 'sma_direct' | 16 | 94 | 129 | +2.164 | 127.6 | 127.6 |
-| 'sma_direct' | 32 | 185 | 257 | +1.386 | 116.1 | 116.1 |
-| 'sma_direct' | 64 | 376 | 513 | -0.731 | 93.2 | 93.2 |
-| 'sma_direct' | 128 | 757 | 1025 | -2.555 | 79.6 | 79.6 |
-| 'sma_recursive' | 8 | 24 | 35 | +6.628 | 296.6 | 296.6 |
-| 'sma_recursive' | 16 | 25 | 44 | +6.628 | 296.6 | 296.6 |
-| 'sma_recursive' | 32 | 26 | 61 | +6.616 | 295.5 | 295.5 |
-| 'sma_recursive' | 64 | 35 | 94 | +6.511 | 286.6 | 286.6 |
-| 'sma_recursive' | 128 | 52 | 159 | +6.511 | 286.6 | 286.6 |
-| 'rc_filter' | $s=4$ | 49 | 25 | +5.878 | 242.6 | 242.6 |
+| `sma_direct` | 8 | 49 | 65 | +4.055 | 168.2 | 168.2 |
+| `sma_direct` | 16 | 94 | 129 | +2.164 | 127.6 | 127.6 |
+| `sma_direct` | 32 | 185 | 257 | +1.386 | 116.1 | 116.1 |
+| `sma_direct` | 64 | 376 | 513 | -0.731 | 93.2 | 93.2 |
+| `sma_direct` | 128 | 757 | 1025 | -2.555 | 79.6 | 79.6 |
+| `sma_recursive` | 8 | 24 | 35 | +6.628 | 296.6 | 296.6 |
+| `sma_recursive` | 16 | 25 | 44 | +6.628 | 296.6 | 296.6 |
+| `sma_recursive` | 32 | 26 | 61 | +6.616 | 295.5 | 295.5 |
+| `sma_recursive` | 64 | 35 | 94 | +6.511 | 286.6 | 286.6 |
+| `sma_recursive` | 128 | 52 | 159 | +6.511 | 286.6 | 286.6 |
+| `rc_filter` | $s=4$ | 49 | 25 | +5.878 | 242.6 | 242.6 |
 
-*(Extracted automatically via 'cl/synth.tcl' and 'results/parse_results.py' from Vivado synthesis reports)*
+*(Extracted automatically via `cl/synth.tcl` and `results/parse_results.py` from Vivado synthesis reports)*
 
 #### Virtual Prototype TLM Analysis (Transfer vs Computation)
 * *Key finding:* At an arithmetic intensity of $\le 2$ operations per sample, computation completes in 1 clock cycle (10 ns @ 100 MHz). Transferring samples over UART (115200 baud) requires $\approx 87\,\mu\text{s}$ per byte, accounting for $>99.9\%$ of end-to-end execution time. Denser compute architectures beyond Variant 1 provide zero system-level speedup without upgrading to high-throughput DMA / PCIe streaming.
@@ -139,7 +140,7 @@
 
 * **Operating Assumptions & Limits:**
   * Power-of-two window size ($N = 2^k$) is assumed; non-power-of-two windows require integer division or multipliers.
-  * Input is constrained to 8-bit signed ('int8'). For 16-bit or 24-bit audio signals, accumulator and internal state widths must scale accordingly.
+  * Input is constrained to 8-bit signed (`int8`). For 16-bit or 24-bit audio signals, accumulator and internal state widths must scale accordingly.
 * **Next Iteration Roadmap:**
   * Multi-channel time-division multiplexing (TDM) processing through a single RC filter engine.
   * Cascaded second-order IIR sections (biquads) for steeper cutoff slopes.
